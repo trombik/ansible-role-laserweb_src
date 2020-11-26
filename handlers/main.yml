@@ -1,0 +1,6 @@
+---
+
+- name: Restart LaserWeb-src
+  service:
+    name: LaserWeb-src
+    state: restarted

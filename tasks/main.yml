@@ -1,0 +1,37 @@
+---
+# tasks file for ansible-role-LaserWeb-src
+
+- include_vars: "{{ ansible_os_family }}.yml"
+
+- include: "install-{{ ansible_os_family }}.yml"
+
+- name: Create log directory
+  file:
+    path: "{{ LaserWeb-src_log_dir }}"
+    mode: 0755
+    owner: "{{ LaserWeb-src_user }}"
+    group: "{{ LaserWeb-src_group }}"
+    state: directory
+  notify: Restart LaserWeb-src
+
+- name: Create db directory
+  file:
+    path: "{{ LaserWeb-src_db_dir }}"
+    mode: 0755
+    owner: "{{ LaserWeb-src_user }}"
+    group: "{{ LaserWeb-src_group }}"
+    state: directory
+  notify: Restart LaserWeb-src
+
+- name: Create LaserWeb-src.conf
+  template:
+    src: LaserWeb-src.conf.j2
+    dest: "{{ LaserWeb-src_conf_file }}"
+    validate: echo %s
+  notify: Restart LaserWeb-src
+
+- name: Start LaserWeb-src
+  service:
+    name: "{{ LaserWeb-src_service }}"
+    enabled: true
+    state: started

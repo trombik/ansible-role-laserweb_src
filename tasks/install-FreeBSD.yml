@@ -1,0 +1,6 @@
+---
+
+- name: Install LaserWeb-src
+  pkgng:
+    name: LaserWeb-src
+    state: present

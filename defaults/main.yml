@@ -1,9 +1,12 @@
 ---
-LaserWeb-src_user: LaserWeb-src
-LaserWeb-src_group: LaserWeb-src
-LaserWeb-src_log_dir: /var/log/LaserWeb-src
-LaserWeb-src_db_dir: "{{ __LaserWeb-src_db_dir }}"
-LaserWeb-src_service: LaserWeb-src
-LaserWeb-src_conf_dir: "{{ __LaserWeb-src_conf_dir }}"
-LaserWeb-src_conf_file: "{{ __LaserWeb-src_conf_dir }}/LaserWeb-src.conf"
-LaserWeb-src_flags: ""
+laserweb_src_user: laserweb
+laserweb_src_group: laserweb
+laserweb_src_groups: "{{ __laserweb_src_groups }}"
+laserweb_src_service: "{{ __laserweb_src_service }}"
+laserweb_src_home: "/home/{{ laserweb_src_user }}"
+laserweb_src_scm_dest: "{{ laserweb_src_home }}/lw.comm-server"
+laserweb_src_scm_url: https://github.com/trombik/lw.comm-server.git
+laserweb_src_extra_packages: "{{ __laserweb_src_extra_packages }}"
+laserweb_src_version: unix
+laserweb_src_port: 8000
+laserweb_src_flags: ""

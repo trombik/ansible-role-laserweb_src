@@ -2,4 +2,4 @@
 __laserweb_src_extra_packages: []
 __laserweb_src_service: laserweb
 __laserweb_src_groups:
-  - dialer
+  - dialout

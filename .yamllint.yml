@@ -8,5 +8,3 @@ rules:
 ignore: |
   # yamllint does not understand erb template
   .kitchen.local.yml
-  .kitchen.yml
-  collections

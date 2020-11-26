@@ -9,6 +9,9 @@ galaxy_info:
   platforms:
     - name: FreeBSD
       versions:
-        - 12.0
+        - 12.1
+    - name: Ubuntu
+      versions:
+        - focal
   galaxy_tags:
-    - system
+    - laserweb

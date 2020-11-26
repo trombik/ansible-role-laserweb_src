@@ -1,37 +1,53 @@
 ---
 # tasks file for ansible-role-LaserWeb-src
 
-- include_vars: "{{ ansible_os_family }}.yml"
+- name: "Include {{ ansible_os_family }}.yml"
+  include_vars: "{{ ansible_os_family }}.yml"
 
-- include: "install-{{ ansible_os_family }}.yml"
+- name: "Include install-{{ ansible_os_family }}.yml"
+  include: "install-{{ ansible_os_family }}.yml"
 
-- name: Create log directory
+- name: Create laserweb_src_group
+  group:
+    name: "{{ laserweb_src_group }}"
+
+- name: Create laserweb_src_user
+  user:
+    name: "{{ laserweb_src_user }}"
+    home: "{{ laserweb_src_home }}"
+    comment: "{{ laserweb_src_user }} user"
+    create_home: yes
+    group: "{{ laserweb_src_group }}"
+    groups: "{{ laserweb_src_groups }}"
+    append: yes
+    state: present
+
+- name: Create laserweb_src_home
   file:
-    path: "{{ LaserWeb-src_log_dir }}"
-    mode: 0755
-    owner: "{{ LaserWeb-src_user }}"
-    group: "{{ LaserWeb-src_group }}"
+    path: "{{ laserweb_src_home }}"
+    mode: "0755"
+    owner: "{{ laserweb_src_user }}"
+    group: "{{ laserweb_src_group }}"
     state: directory
-  notify: Restart LaserWeb-src
 
-- name: Create db directory
-  file:
-    path: "{{ LaserWeb-src_db_dir }}"
-    mode: 0755
-    owner: "{{ LaserWeb-src_user }}"
-    group: "{{ LaserWeb-src_group }}"
-    state: directory
-  notify: Restart LaserWeb-src
+- name: Checkout laserweb_src_scm_url
+  git:
+    dest: "{{ laserweb_src_scm_dest }}"
+    recursive: yes
+    repo: "{{ laserweb_src_scm_url }}"
+    version: "{{ laserweb_src_version }}"
+  become: yes
+  become_user: "{{ laserweb_src_user }}"
 
-- name: Create LaserWeb-src.conf
-  template:
-    src: LaserWeb-src.conf.j2
-    dest: "{{ LaserWeb-src_conf_file }}"
-    validate: echo %s
-  notify: Restart LaserWeb-src
+- name: Install node modules
+  command: npm ci
+  args:
+    chdir: "{{ laserweb_src_scm_dest }}"
+    creates: "{{ laserweb_src_scm_dest }}/node_modules"
+  become: yes
+  become_user: "{{ laserweb_src_user }}"
 
-- name: Start LaserWeb-src
+- name: Start laserweb_src_service
   service:
-    name: "{{ LaserWeb-src_service }}"
-    enabled: true
+    name: "{{ laserweb_src_service }}"
     state: started

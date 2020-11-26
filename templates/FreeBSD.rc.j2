@@ -1,0 +1,34 @@
+#!/bin/sh
+
+# PROVIDE: laserweb
+# REQUIRE: network
+
+. /etc/rc.subr
+
+name="laserweb"
+rcvar="laserweb_enable"
+
+load_rc_config $name
+
+: ${laserweb_enable:="NO"}
+: ${laserweb_flags:=""}
+: ${laserweb_pidfile:="/var/run/laserweb.pid"}
+: ${laserweb_user:="{{ laserweb_src_user }}"}
+: ${laserweb_group:="{{ laserweb_src_group }}"}
+: ${laserweb_env:="NODE_ENV:=production"}
+: ${laserweb_chdir:="{{ laserweb_src_scm_dest }}"}
+
+command="/usr/sbin/daemon"
+pidfile="${laserweb_pidfile}"
+command_args="-f -p ${pidfile} /usr/local/bin/node {{ laserweb_src_scm_dest }}/server.js"
+start_precmd=laserweb_startprecmd
+procname="/usr/local/bin/node"
+
+laserweb_startprecmd()
+{
+    if [ ! -e ${pidfile} ]; then
+        install -o ${laserweb_user} -g ${laserweb_group} /dev/null ${pidfile};
+    fi
+}
+
+run_rc_command "$1"

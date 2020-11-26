@@ -1,6 +1,24 @@
 ---
 
-- name: Install LaserWeb-src
+- name: Install laserweb_src_extra_packages
   pkgng:
-    name: LaserWeb-src
+    name: "{{ laserweb_src_extra_packages }}"
     state: present
+
+- name: Create rc config script for laserweb
+  template:
+    src: FreeBSD.rc.conf.j2
+    dest: "/etc/rc.conf.d/{{ laserweb_src_service }}"
+    validate: sh -n %s
+
+- name: Create rc script for laserweb
+  template:
+    src: FreeBSD.rc.j2
+    dest: "/usr/local/etc/rc.d/{{ laserweb_src_service }}"
+    mode: "0755"
+    validate: sh -n %s
+
+- name: Enable laserweb_src_service
+  service:
+    name: "{{ laserweb_src_service }}"
+    enabled: yes

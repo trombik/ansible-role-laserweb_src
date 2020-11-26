@@ -1,6 +1,32 @@
 ---
 - hosts: localhost
   roles:
-    - ansible-role-LaserWeb-src
+    - name: trombik.redhat_repo
+      when: ansible_os_family == 'RedHat'
+    - name: trombik.nodejs
+    - name: trombik.apt_repo
+      when: ansible_os_family == 'Debian'
+    - name: trombik.git
+    - name: ansible-role-LaserWeb-src
   vars:
-    LaserWeb-src_config: ""
+    apt_repo_keys_to_add:
+      - https://deb.nodesource.com/gpgkey/nodesource.gpg.key
+    apt_repo_enable_apt_transport_https: yes
+    apt_repo_to_add:
+      - "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
+    redhat_repo:
+      epel:
+        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+        gpgcheck: yes
+        enabled: yes
+    os_nodejs_package:
+      FreeBSD: www/node10
+      Debian: nodejs
+      RedHat: nodejs
+    nodejs_package: "{{ os_nodejs_package[ansible_os_family] }}"
+
+    os_nodejs_npm_package:
+      FreeBSD: www/npm-node10
+      Debian: npm
+      RedHat: npm
+    nodejs_npm_package: "{{ os_nodejs_npm_package[ansible_os_family] }}"

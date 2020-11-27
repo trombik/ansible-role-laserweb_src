@@ -38,6 +38,8 @@
     version: "{{ laserweb_src_version }}"
   become: yes
   become_user: "{{ laserweb_src_user }}"
+  notify:
+    - Build LaserWeb
 
 - name: Install node modules
   command: npm ci
@@ -46,6 +48,9 @@
     creates: "{{ laserweb_src_scm_dest }}/node_modules"
   become: yes
   become_user: "{{ laserweb_src_user }}"
+
+- name: "Include configure-{{ ansible_os_family }}.yml"
+  include: "configure-{{ ansible_os_family }}.yml"
 
 - name: Start laserweb_src_service
   service:

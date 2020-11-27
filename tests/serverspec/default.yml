@@ -30,3 +30,16 @@
       Debian: npm
       RedHat: npm
     nodejs_npm_package: "{{ os_nodejs_npm_package[ansible_os_family] }}"
+
+    laserweb_src_port: 8001
+    os_my_env:
+      FreeBSD:
+    my_env: "NODE_ENV=production WEB_PORT={{ laserweb_src_port }} VERBOSE_LEVEL=2"
+    os_laserweb_src_flags:
+      FreeBSD: |
+        laserweb_env="{{ my_env }}"
+      Debian: |
+        {% for line in my_env.split(" ") %}
+        {{ line }}
+        {% endfor %}
+    laserweb_src_flags: "{{ os_laserweb_src_flags[ansible_os_family] }}"

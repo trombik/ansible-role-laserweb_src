@@ -13,7 +13,13 @@ groups = case os[:family]
 service = "laserweb"
 version = "unix"
 scm_dest = "/home/laserweb/lw.comm-server"
-ports = [8000]
+port = 8001
+default_group = case os[:family]
+                when /bsd/
+                  "wheel"
+                else
+                  "root"
+                end
 
 describe group(group) do
   it { should exist }
@@ -47,13 +53,49 @@ describe command "cd #{scm_dest} && git branch" do
   its(:stdout) { should match(/^\*\s+#{version}/) }
 end
 
+describe file("#{scm_dest}/app/dist/index.js") do
+  it { should exist }
+  it { should be_file }
+  it { should be_owned_by user }
+  it { should be_grouped_into group }
+end
+
+case os[:family]
+when "freebsd"
+  describe file("/etc/rc.conf.d/laserweb") do
+    it { should exist }
+    it { should be_file }
+    it { should be_owned_by "root" }
+    it { should be_grouped_into default_group }
+    it { should be_mode 644 }
+    its(:content) { should match(/Managed by ansible/) }
+    its(:content) { should match(/NODE_ENV=production WEB_PORT=8001 VERBOSE_LEVEL=2/) }
+  end
+when "ubuntu"
+  describe file("/etc/default/laserweb") do
+    it { should exist }
+    it { should be_file }
+    it { should be_owned_by "root" }
+    it { should be_grouped_into default_group }
+    it { should be_mode 644 }
+    its(:content) { should match(/Managed by ansible/) }
+    its(:content) { should match(/^NODE_ENV=production$/) }
+    its(:content) { should match(/^WEB_PORT=8001$/) }
+    its(:content) { should match(/^VERBOSE_LEVEL=2$/) }
+  end
+end
+
 describe service(service) do
   it { should be_enabled }
   it { should be_running }
 end
 
-ports.each do |p|
-  describe port(p) do
-    it { should be_listening }
-  end
+describe port(port) do
+  it { should be_listening }
+end
+
+describe command "curl --silent http://127.0.0.1:#{port}/dist/index.html" do
+  its(:exit_status) { should eq 0 }
+  its(:stderr) { should be_empty }
+  its(:stdout) { should match(/<!DOCTYPE/) }
 end

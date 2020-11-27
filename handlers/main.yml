@@ -1,6 +1,15 @@
 ---
 
-- name: Restart LaserWeb-src
+- name: Restart LaserWeb
   service:
-    name: LaserWeb-src
+    name: "{{ laserweb_src_service }}"
     state: restarted
+
+- name: Build LaserWeb
+  command: npm run build
+  args:
+    chdir: "{{ laserweb_src_scm_dest }}"
+  become: yes
+  become_user: "{{ laserweb_src_user }}"
+  notify:
+    - Restart LaserWeb

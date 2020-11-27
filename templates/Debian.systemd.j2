@@ -11,7 +11,7 @@ SyslogIdentifier={{ laserweb_src_service }}
 WorkingDirectory={{ laserweb_src_scm_dest }}
 User={{ laserweb_src_user }}
 Group={{ laserweb_src_group }}
-Environment=NODE_ENV=production PORT={{ laserweb_src_port }}
+EnvironmentFile=/etc/default/laserweb
 
 [Install]
 WantedBy=multi-user.target

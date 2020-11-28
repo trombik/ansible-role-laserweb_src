@@ -53,7 +53,7 @@ describe command "cd #{scm_dest} && git branch" do
   its(:stdout) { should match(/^\*\s+#{version}/) }
 end
 
-describe file("#{scm_dest}/app/dist/index.js") do
+describe file("#{scm_dest}/app/index.js") do
   it { should exist }
   it { should be_file }
   it { should be_owned_by user }
@@ -94,7 +94,7 @@ describe port(port) do
   it { should be_listening }
 end
 
-describe command "curl --silent http://127.0.0.1:#{port}/dist/index.html" do
+describe command "curl --silent http://127.0.0.1:#{port}/index.html" do
   its(:exit_status) { should eq 0 }
   its(:stderr) { should be_empty }
   its(:stdout) { should match(/<!DOCTYPE/) }

@@ -11,5 +11,10 @@
     chdir: "{{ laserweb_src_scm_dest }}"
   become: yes
   become_user: "{{ laserweb_src_user }}"
+  environment:
+    # XXX increase memory during webpack build. when building the code with
+    # webpack, the process is killed, probably due to out-of-memory. this
+    # happens in Travis CI, not in local VirtualBox machine.
+    NODE_OPTIONS: --max-old-space-size=4096
   notify:
     - Restart LaserWeb

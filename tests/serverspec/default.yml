@@ -15,8 +15,9 @@
     apt_repo_to_add:
       - "deb https://deb.nodesource.com/node_10.x {{ ansible_distribution_release }} main"
     redhat_repo:
-      epel:
-        mirrorlist: "http://mirrors.fedoraproject.org/mirrorlist?repo=epel-{{ ansible_distribution_major_version }}&arch={{ ansible_architecture }}"
+      node:
+        baseurl: https://rpm.nodesource.com/pub_10.x/el/7/$basearch
+        gpgkey: https://rpm.nodesource.com/pub/el/NODESOURCE-GPG-SIGNING-KEY-EL
         gpgcheck: yes
         enabled: yes
     os_nodejs_package:
@@ -28,7 +29,7 @@
     os_nodejs_npm_package:
       FreeBSD: www/npm-node10
       Debian: npm
-      RedHat: npm
+      RedHat: ""
     nodejs_npm_package: "{{ os_nodejs_npm_package[ansible_os_family] }}"
 
     laserweb_src_port: 8001
@@ -39,6 +40,10 @@
       FreeBSD: |
         laserweb_env="{{ my_env }}"
       Debian: |
+        {% for line in my_env.split(" ") %}
+        {{ line }}
+        {% endfor %}
+      RedHat: |
         {% for line in my_env.split(" ") %}
         {{ line }}
         {% endfor %}

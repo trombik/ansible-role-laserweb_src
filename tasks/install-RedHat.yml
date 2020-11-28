@@ -1,0 +1,17 @@
+---
+
+- name: Install laserweb_src_extra_packages
+  yum:
+    name: "{{ laserweb_src_extra_packages }}"
+    state: present
+
+- name: Create systemd script for laserweb
+  template:
+    src: RedHat.systemd.j2
+    dest: /lib/systemd/system/laserweb.service
+    mode: "0755"
+
+- name: Enable laserweb_src_service
+  service:
+    name: "{{ laserweb_src_service }}"
+    enabled: yes

@@ -1,0 +1,17 @@
+[Unit]
+Description=LaserWeb4 server
+
+[Service]
+ExecStart=/usr/bin/node {{ laserweb_src_scm_dest }}/server.js
+Restart=always
+RestartSec=10                       # Restart service after 10 seconds if node service crashes
+StandardOutput=syslog               # Output to syslog
+StandardError=syslog                # Output to syslog
+SyslogIdentifier={{ laserweb_src_service }}
+WorkingDirectory={{ laserweb_src_scm_dest }}
+User={{ laserweb_src_user }}
+Group={{ laserweb_src_group }}
+EnvironmentFile=/etc/sysconfig/laserweb
+
+[Install]
+WantedBy=multi-user.target

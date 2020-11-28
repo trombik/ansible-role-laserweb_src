@@ -1,6 +1,8 @@
 ---
 driver:
   name: vagrant
+  customize:
+    memory: 1024
 
 transport:
   name: rsync
@@ -35,6 +37,11 @@ platforms:
   - name: ubuntu-20.04-amd64
     driver:
       box: trombik/ansible-ubuntu-20.04-amd64
+      box_check_update: false
+
+  - name: centos-7.8-x86_64
+    driver:
+      box: trombik/ansible-centos-7.8-x86_64
       box_check_update: false
 
 suites:

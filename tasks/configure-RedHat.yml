@@ -1,0 +1,10 @@
+---
+
+- name: "Create /etc/sysconfig/{{ laserweb_src_service }}"
+  template:
+    src: Debian.default.j2
+    dest: "/etc/sysconfig/{{ laserweb_src_service }}"
+    mode: "0644"
+    validate: sh -n %s
+  notify:
+    - Restart LaserWeb
